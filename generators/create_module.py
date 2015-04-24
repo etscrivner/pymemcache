@@ -31,6 +31,8 @@ logger = logging.getLogger(__name__)
 
 TEST_BOILERPLATE = """
 # -*- coding: utf-8 -*-
+import unittest
+
 from tests import base
 
 
@@ -38,6 +40,11 @@ class Test{test_name}(base.BaseTestCase):
 
     def test_should_fail(self):
         self.fail('Should write some tests for this stuff!')
+
+
+if __name__ == '__main__':
+    unittest.main()
+
 """.strip()
 
 
@@ -124,7 +131,7 @@ def format_module_boilerplate(module_name):
     """Returns the formatted boilerplate for the given module.
 
     :param module_name: A module name
-    :type module_name: str or unicode    
+    :type module_name: str or unicode
     :rtype: str or unicode
     """
     if not module_name:
@@ -169,17 +176,18 @@ def create_module_file(module_name, include_tests=False):
     if os.path.exists(full_test_path):
         print 'ERROR: Test {} already exists!'.format(full_test_path)
         exit(1)
-    
+
     sys.stdout.write('--> Creating file "{}"...'.format(full_module_path))
     print 'DONE!'
     with open(full_module_path, 'w') as modulefile:
         modulefile.write(format_module_boilerplate(module_name))
     print
-    sys.stdout.write('--> Creating tests "{}"...'.format(full_test_path))
-    with open(full_test_path, 'w') as testfile:
-        testfile.write(format_test_boilerplate(module_name))
-    print 'DONE!'
-    print
+    if include_tests:
+        sys.stdout.write('--> Creating tests "{}"...'.format(full_test_path))
+        with open(full_test_path, 'w') as testfile:
+            testfile.write(format_test_boilerplate(module_name))
+        print 'DONE!'
+        print
 
 
 if __name__ == '__main__':
@@ -191,6 +199,8 @@ if __name__ == '__main__':
         '--module', help='The python dot notation for module (Ex.app.utils)')
     parser.add_argument(
         '--dry-run', help='Print boilerplate without writing file.')
+    parser.add_argument('--no-tests', help='Skip generating the tests file',
+                        action='store_false', default=True)
     args = parser.parse_args()
 
     if args.test:
@@ -198,4 +208,4 @@ if __name__ == '__main__':
     elif args.dry_run:
         print format_module_boilerplate(args.dry_run)
     elif args.module:
-        create_module_file(args.module)
+        create_module_file(args.module, include_tests=args.no_tests)
