@@ -5,6 +5,7 @@
     Command-line interface (CLI) for pymemcache
 
 """
+import argparse
 import logging
 import sys
 
@@ -24,5 +25,13 @@ def configure_logging():
 
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(
+        description='Memcached implementation in python')
+    parser.add_argument('--host', type=str, default='localhost',
+                        help='An IP address or hostname')
+    parser.add_argument('--port', type=int, default=9999,
+                        help='A TCP port to listen for connections on')
+    results = parser.parse_args()
+
     configure_logging()
-    server.serve_forever()
+    server.serve_forever(host=results.host, port=results.port)
