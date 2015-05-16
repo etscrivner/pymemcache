@@ -20,4 +20,4 @@ folder:
 .. code-block:: shell
 
    $ PYTHONPATH=. python pymemcache/cli.py
-
+   --> Accepting connections on localhost:9999
