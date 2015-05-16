@@ -8,6 +8,9 @@
 import logging
 import socket
 
+from pymemcache import cache
+from pymemcache import request
+
 
 logger = logging.getLogger(__name__)
 
@@ -47,6 +50,27 @@ def slurp_connection(connection, client_address):
     return raw_request_data
 
 
+def process_command(raw_data, the_cache):
+    """Process the command associated with the given raw data.
+
+    :param raw_data: The raw data from the socket
+    :type raw_data: str or unicode
+    :param the_cache: The cache for this process
+    :type the_cache: dict
+    :rtype: str or unicode
+    """
+    raw_data = raw_data.decode('utf-8')
+    command, body = request.parse_command(raw_data)
+    logger.debug('--> Command %r', command)
+    if command.startswith('get'):
+        key = command.split(' ')[1]
+        return the_cache.get(key) or '-1'
+    if command.startswith('set'):
+        key = command.split(' ')[1]
+        the_cache.set(key, body[0])
+        return '1'
+
+
 def serve_forever(host='localhost', port=9999):
     """Process incoming requests from the given socket.
 
@@ -56,6 +80,7 @@ def serve_forever(host='localhost', port=9999):
     :type port: int
     """
     sock = create_server_socket(host, port)
+    process_cache = cache.Cache({u'\u00e9poche': 'Got it!'})
     try:
         sock.listen(1)
         logger.info('--> Accepting connections on %s:%d', host, port)
@@ -63,7 +88,10 @@ def serve_forever(host='localhost', port=9999):
             connection, client_address = sock.accept()
             try:
                 logger.info('--> Connection from %r', client_address)
-                print slurp_connection(connection, client_address)
+                raw_data = slurp_connection(connection, client_address)
+                result = process_command(raw_data, process_cache)
+                logger.info('--> Result "%r"', result)
+                connection.send(result)
             finally:
                 logger.info('--> Connection closed.')
                 connection.close()

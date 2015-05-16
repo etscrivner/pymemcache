@@ -47,7 +47,7 @@ class Cache(object):
         :param value: The value
         :type value: str or unicode
         """
-        logger.debug('Inserting "%r"', key)
+        logger.debug('Inserting %r', key)
         self._cache[key] = value
         self.touch(key)
 
@@ -59,7 +59,7 @@ class Cache(object):
         :return: The value associated with the key or None if not found.
         :rtype: str or unicode or None
         """
-        logger.debug('Retrieving "%r"', key)
+        logger.debug('Retrieving %r <<-FROM->> %r', key, self._cache)
         result = self._cache.get(key)
         if result:
             self.touch(key)

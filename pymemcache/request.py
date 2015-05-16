@@ -5,6 +5,7 @@
     Facilities for representing and processing requests.
 
 """
+import collections
 import logging
 
 from pymemcache import errors
@@ -15,6 +16,25 @@ logger = logging.getLogger(__name__)
 
 class InvalidRequestError(errors.Error):
     """Error raised when a request is malformed or invalid"""
+
+
+def parse_command(raw_data):
+    """Parse the command-line and body from raw string data.
+
+    :param raw_data: The raw string data
+    :type raw_data: str or unicode
+    :return: (str, [str])
+    :rtype: tuple
+    """
+    if not raw_data:
+        raise InvalidRequestError('Request contains no data.')
+
+    parts = filter(None, [each.strip() for each in raw_data.split('\r\n')])
+
+    if not parts:
+        raise InvalidRequestError('Could not parse request.')
+
+    return (parts.pop(0), parts)
 
 
 def is_valid_command(command):
