@@ -10,6 +10,7 @@ import socket
 
 from pymemcache import cache
 from pymemcache import request
+from pymemcache import response
 
 
 logger = logging.getLogger(__name__)
@@ -57,18 +58,21 @@ def process_command(raw_data, the_cache):
     :type raw_data: str or unicode
     :param the_cache: The cache for this process
     :type the_cache: dict
-    :rtype: str or unicode
+    :rtype: response.Response
     """
     raw_data = raw_data.decode('utf-8')
     command, body = request.parse_command(raw_data)
     logger.debug('--> Command %r', command)
     if command.startswith('get'):
         key = command.split(' ')[1]
-        return the_cache.get(key) or '-1'
+        result = the_cache.get(key)
+        if not result:
+            return response.NotFoundResponse()
+        return response.GetResponse({key: result})
     if command.startswith('set'):
         key = command.split(' ')[1]
         the_cache.set(key, body[0])
-        return '1'
+        return response.StoredResponse()
 
 
 def serve_forever(host='localhost', port=9999):
@@ -89,9 +93,9 @@ def serve_forever(host='localhost', port=9999):
             try:
                 logger.info('--> Connection from %r', client_address)
                 raw_data = slurp_connection(connection, client_address)
-                result = process_command(raw_data, process_cache)
-                logger.info('--> Result "%r"', result)
-                connection.send(result)
+                response = process_command(raw_data, process_cache)
+                logger.info('--> Result "%r"', response.data)
+                response.send_via(connection)
             finally:
                 logger.info('--> Connection closed.')
                 connection.close()

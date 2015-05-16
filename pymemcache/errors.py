@@ -17,3 +17,7 @@ class ConnectionError(Error):
 
 class RequestError(Error):
     """Base class for errors related to the request contents"""
+
+
+class ResponseError(Error):
+    """Base class for errors related to responses"""
