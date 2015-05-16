@@ -73,7 +73,7 @@ class GetResponse(Response):
             raise errors.ResponseError('Empty response data given')
 
         stringified_result = ''
-        for key, value in data.iteritems():
+        for key, value in data.items():
             stringified_result += 'VALUE {} {}\r\n'.format(key, len(value))
             stringified_result += '{}\r\n'.format(value)
         stringified_result += 'END\r\n'

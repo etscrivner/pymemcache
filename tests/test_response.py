@@ -26,10 +26,9 @@ class TestGetResponse(base.BaseTestCase):
         """Should correctly serialize multi-item dict"""
         fixture = collections.OrderedDict({'hello': 'you', 'good': 'byte'})
         resp = response.GetResponse(fixture)
-        self.assertEqual(
-            "VALUE good 4\r\nbyte\r\nVALUE hello 3\r\nyou\r\nEND\r\n",
-            resp.data
-        )
+        self.assertIn('VALUE good 4\r\nbyte\r\n', resp.data)
+        self.assertIn('VALUE hello 3\r\nyou\r\n', resp.data)
+        self.assertIn('END\r\n', resp.data)
 
 
 if __name__ == '__main__':
