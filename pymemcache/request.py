@@ -29,7 +29,7 @@ def parse_command(raw_data):
     if not raw_data:
         raise InvalidRequestError('Request contains no data.')
 
-    parts = filter(None, [each.strip() for each in raw_data.split('\r\n')])
+    parts = [each.strip() for each in raw_data.split('\r\n') if each.strip()]
 
     if not parts:
         raise InvalidRequestError('Could not parse request.')
