@@ -12,7 +12,7 @@ import sys
 from pymemcache import server
 
 
-logger = logging.getLogger(__name__)
+LOGGER = logging.getLogger(__name__)
 
 
 def configure_logging():
@@ -24,7 +24,8 @@ def configure_logging():
     root_logger.addHandler(stderr_handler)
 
 
-if __name__ == '__main__':
+def run():
+    """Run command-line server interface"""
     parser = argparse.ArgumentParser(
         description='Memcached implementation in python')
     parser.add_argument('--host', type=str, default='localhost',
@@ -35,3 +36,7 @@ if __name__ == '__main__':
 
     configure_logging()
     server.serve_forever(host=results.host, port=results.port)
+
+
+if __name__ == '__main__':
+    run()

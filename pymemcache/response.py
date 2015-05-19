@@ -8,9 +8,10 @@
 import logging
 
 from pymemcache import errors
+from pymemcache import utils
 
 
-logger = logging.getLogger(__name__)
+LOGGER = logging.getLogger(__name__)
 
 
 class Response(object):
@@ -31,7 +32,7 @@ class Response(object):
                 'Invalid response data. May indicate sending object of type '
                 'Response or SimpleResponse instead of subclass.')
 
-        socket.send(self.data.encode('utf-8'))
+        utils.spit_connection(socket, self.data.encode('utf-8'))
 
 
 class SimpleResponse(Response):
@@ -45,18 +46,22 @@ class SimpleResponse(Response):
 
 
 class StoredResponse(SimpleResponse):
+    """Given data was successfully stored"""
     RESPONSE_BODY = 'STORED\r\n'
 
 
 class NotStoredResponse(SimpleResponse):
+    """Given data was not stored"""
     RESPONSE_BODY = 'NOT_STORED\r\n'
 
 
 class ExistsResponse(SimpleResponse):
+    """A key exists"""
     RESPONSE_BODY = 'EXISTS\r\n'
 
 
 class NotFoundResponse(SimpleResponse):
+    """Key was not found"""
     RESPONSE_BODY = 'NOT_FOUND\r\n'
 
 

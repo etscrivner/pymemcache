@@ -5,13 +5,12 @@
     Facilities for representing and processing requests.
 
 """
-import collections
 import logging
 
 from pymemcache import errors
 
 
-logger = logging.getLogger(__name__)
+LOGGER = logging.getLogger(__name__)
 
 
 class InvalidRequestError(errors.Error):
