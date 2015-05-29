@@ -3,7 +3,11 @@ Pymemcache
 ===============================
 
 .. image:: https://img.shields.io/travis/etscrivner/pymemcache.svg
-        :target: https://travis-ci.org/etscrivner/pymemcache
+   :target: https://travis-ci.org/etscrivner/pymemcache
+
+
+.. image:: https://coveralls.io/repos/etscrivner/pymemcache/badge.svg
+   :target: https://coveralls.io/r/etscrivner/pymemcache
 
 
 A simple memcached clone writting in Python.

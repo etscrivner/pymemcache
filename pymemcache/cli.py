@@ -28,14 +28,12 @@ def run():
     """Run command-line server interface"""
     parser = argparse.ArgumentParser(
         description='Memcached implementation in python')
-    parser.add_argument('--host', type=str, default='localhost',
-                        help='An IP address or hostname')
     parser.add_argument('--port', type=int, default=9999,
                         help='A TCP port to listen for connections on')
     results = parser.parse_args()
 
     configure_logging()
-    server.serve_forever(host=results.host, port=results.port)
+    server.serve_forever(port=results.port)
 
 
 if __name__ == '__main__':

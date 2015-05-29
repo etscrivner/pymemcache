@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
-import fcntl
-import os
 import socket
 
-from pymemcache import server
+from pymemcache import utils
 
 
 def create_socket(host, port):
@@ -22,10 +20,11 @@ def create_socket(host, port):
 
 def run(host, port):
     channel = create_socket(host, port)
+    #command = "set eric 4\r\nhire\r\nend"
     command = "get eric\r\n"
-    server.spit_connection(channel, command.encode('utf-8'))
+    utils.spit_connection(channel, command.encode('utf-8'))
     print("Sent")
-    print(server.slurp_connection(channel))
+    print(utils.slurp_connection(channel))
     channel.close()
 
 

@@ -43,6 +43,10 @@ docs/_build
 
 # Emacs
 *~
+.\#*
+\#*\#
 
 # Python
 *.pyc
+.coveragerc
+.ropeproject
