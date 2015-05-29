@@ -8,7 +8,6 @@
 import logging
 
 from pymemcache import errors
-from pymemcache import utils
 
 
 LOGGER = logging.getLogger(__name__)
@@ -20,19 +19,6 @@ class Response(object):
     def __init__(self, data):
         """Initialize response with data to be sent"""
         self.data = data
-
-    def send_via(self, socket):
-        """Send this response over the given socket.
-
-        :param socket: A socket connection
-        :type socket: socket.socket
-        """
-        if not self.data:
-            raise errors.ResponseError(
-                'Invalid response data. May indicate sending object of type '
-                'Response or SimpleResponse instead of subclass.')
-
-        utils.spit_connection(socket, self.data.encode('utf-8'))
 
 
 class SimpleResponse(Response):
